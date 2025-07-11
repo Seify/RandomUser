@@ -37,6 +37,14 @@ struct ContentView: View {
         } detail: {
             Text("Select an item")
         }
+        .task {
+            do {
+                let users = try await RandomClient().getUsers()
+                print("users = \(users)")
+            } catch {
+                print(error)
+            }
+        }
     }
 
     private func addItem() {

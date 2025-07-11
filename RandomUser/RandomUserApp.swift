@@ -1,10 +1,3 @@
-//
-//  RandomUserApp.swift
-//  RandomUser
-//
-//  Created by Roman Smirnov on 11.07.2025.
-//
-
 import SwiftUI
 import SwiftData
 
