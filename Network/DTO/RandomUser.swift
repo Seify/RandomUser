@@ -8,12 +8,14 @@ struct RandomUsers: Decodable {
 }
 
 struct RandomUser: Decodable {
+    let login: RandomUserLogin
     let gender: String
     let name: RandomUserName
     let location: RandomUserLocation
     let email: String
     let phone: String
     let picture: RandomUserPicture
+    let registered: RandomUserRegistered
 }
 
 struct RandomUserName: Decodable {
@@ -41,4 +43,8 @@ struct RandomUserPicture: Decodable {
     let large: String
     let medium: String
     let thumbnail: String
+}
+
+struct RandomUserLogin: Decodable {
+    let uuid: String
 }
