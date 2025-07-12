@@ -1,7 +1,7 @@
 import Foundation
 
 protocol RandomClientProtocol {
-    func getUsers(_ limit: Int) async throws -> [RandomUser]
+    func getUsers(_ limit: Int) async throws -> RandomUsers
 }
 
 enum RandomClientError: Error {
@@ -11,11 +11,14 @@ enum RandomClientError: Error {
 }
 
 final class RandomClient: RandomClientProtocol {
-    func getUsers(_ limit: Int = 40) async throws -> [RandomUser] {
-        guard let url = URL(string: Endpoints.users(limit).path) else {
-            throw RandomClientError.failedToCreateURL
-        }
 
+    private let decoder: RandomJsonDecoderProtocol
+
+    init(decoder: RandomJsonDecoderProtocol) {
+        self.decoder = decoder
+    }
+
+    private func getObjectFrom<T: Decodable>(url: URL) async throws -> T {
         let (data, response) = try await URLSession.shared.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -26,8 +29,18 @@ final class RandomClient: RandomClientProtocol {
             throw RandomClientError.failedResponseStatusCode(httpResponse.statusCode)
         }
 
-        let users = try JSONDecoder().decode(RandomUsers.self, from: data)
-        return users.results
+        let object: T = try decoder.decode(data: data)
+
+        return object
+    }
+
+    func getUsers(_ limit: Int = 40) async throws -> RandomUsers {
+        guard let url = URL(string: Endpoints.users(limit).path) else {
+            throw RandomClientError.failedToCreateURL
+        }
+
+        let users: RandomUsers = try await getObjectFrom(url: url)
+        return users
     }
 
 }

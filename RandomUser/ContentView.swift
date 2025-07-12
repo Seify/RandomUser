@@ -39,7 +39,7 @@ struct ContentView: View {
         }
         .task {
             do {
-                let users = try await RandomClient().getUsers()
+                let users = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
                 print("users = \(users)")
             } catch {
                 print(error)
