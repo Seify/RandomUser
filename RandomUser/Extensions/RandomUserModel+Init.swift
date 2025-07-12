@@ -12,6 +12,7 @@ extension RandomUserModel {
             city: user.location.city,
             state: user.location.state,
             email: user.email,
+            phone: user.phone,
             registered: user.registered.date,
             largePicture: user.picture.large,
             mediumPicture: user.picture.medium,

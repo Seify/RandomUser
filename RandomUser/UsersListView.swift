@@ -1,14 +1,7 @@
-//
-//  ContentView.swift
-//  RandomUser
-//
-//  Created by Roman Smirnov on 11.07.2025.
-//
-
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [RandomUserModel]
 
@@ -19,7 +12,7 @@ struct ContentView: View {
                     NavigationLink {
                         Text("\(user.email)")
                     } label: {
-                        Text("\(user.title) \(user.firstName) \(user.lastName)")
+                        UserCellView(user: user)
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -44,8 +37,6 @@ struct ContentView: View {
                     let model = RandomUserModel(user: user)
                     modelContext.insert(model)
                 }
-
-                print("users = \(users)")
             } catch {
                 print(error)
             }
@@ -69,6 +60,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    UsersListView()
         .modelContainer(for: Item.self, inMemory: true)
 }

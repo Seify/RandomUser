@@ -19,6 +19,8 @@ class RandomUserModel {
 
     var email: String
 
+    var phone: String
+
     var registered: String
 
     var largePicture: String
@@ -35,6 +37,7 @@ class RandomUserModel {
         city: String,
         state: String,
         email: String,
+        phone: String,
         registered: String,
         largePicture: String,
         mediumPicture: String,
@@ -50,6 +53,7 @@ class RandomUserModel {
         self.city = city
         self.state = state
         self.email = email
+        self.phone = phone
         self.registered = registered
         self.largePicture = largePicture
         self.mediumPicture = mediumPicture

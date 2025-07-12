@@ -18,7 +18,7 @@ struct RandomUserApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            UsersListView()
         }
         .modelContainer(sharedModelContainer)
     }
