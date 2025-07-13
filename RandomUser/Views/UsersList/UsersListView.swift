@@ -4,9 +4,7 @@ import SwiftData
 struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(
-        filter: #Predicate<RandomUserModel> { user in
-            user.isDeleted == false
-        },
+        filter: #Predicate<RandomUserModel> { $0.isDeleted == false },
         sort: \.timestamp
     ) private var users: [RandomUserModel]
 
@@ -58,7 +56,7 @@ struct UsersListView: View {
             return
         }
 
-        if let lastUser = users.last, lastUser.uuid == lastAppearedUser.uuid {
+        if let lastUser = users.last, lastUser == lastAppearedUser {
             await loadUsers()
         }
     }
@@ -88,15 +86,14 @@ struct UsersListView: View {
             } catch {
                 print(error)
             }
-            
+
             viewModel.updateFilteredUsers(from: users)
         }
     }
 
     private func deleteUser(at index: IndexSet.Element) {
         let user = viewModel.filteredUsers[index]
-        let userModel = users.first(where: { $0.uuid == user.uuid })
-        userModel?.isDeleted = true
+        user.isDeleted = true
     }
 }
 

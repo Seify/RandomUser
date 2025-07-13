@@ -3,7 +3,7 @@ import Foundation
 @Observable
 class UsersListViewModel {
     var searchText: String = ""
-    var selectedTokens = [UserSearchToken]()
+    var selectedTokens: [UserSearchToken] = []
     var suggestedTokens = UserSearchToken.allCases
 
     private(set) var filteredUsers: [RandomUserModel] = []
@@ -32,7 +32,7 @@ class UsersListViewModel {
     }
 
     private func isUser(_ user: RandomUserModel, matchToken token: UserSearchToken) -> Bool {
-        
+
         switch token {
             case .name:
                 user.firstName.localizedStandardContains(searchText)
