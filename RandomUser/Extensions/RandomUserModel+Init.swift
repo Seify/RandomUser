@@ -17,7 +17,8 @@ extension RandomUserModel {
             largePicture: user.picture.large,
             mediumPicture: user.picture.medium,
             thumbnail: user.picture.thumbnail,
-            uuid: user.login.uuid
+            uuid: user.login.uuid,
+            isDeleted: false
         )
     }
 }

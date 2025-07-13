@@ -45,9 +45,9 @@ struct UserDetailsView: View {
                 LabeledContent("Location", value: location)
                 LabeledContent("Registered", value: registered)
             }
-
-            Spacer()
+                .scrollContentBackground(.hidden)
         }
+        .navigationTitle("Random User")
     }
 }
 

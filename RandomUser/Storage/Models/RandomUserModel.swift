@@ -6,6 +6,8 @@ class RandomUserModel {
 
     @Attribute(.unique) var uuid: String
 
+    var isDeleted: Bool
+
     var title: String
     var firstName: String
     var lastName: String
@@ -42,7 +44,8 @@ class RandomUserModel {
         largePicture: String,
         mediumPicture: String,
         thumbnail: String,
-        uuid: String
+        uuid: String,
+        isDeleted: Bool
     ) {
         self.title = title
         self.firstName = firstName
@@ -59,5 +62,6 @@ class RandomUserModel {
         self.mediumPicture = mediumPicture
         self.thumbnail = thumbnail
         self.uuid = uuid
+        self.isDeleted = isDeleted
     }
 }

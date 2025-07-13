@@ -3,7 +3,9 @@ import SwiftData
 
 struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var users: [RandomUserModel]
+    @Query(filter: #Predicate<RandomUserModel> { user in
+        user.isDeleted == false
+    }) private var users: [RandomUserModel]
 
     var body: some View {
         NavigationSplitView {
@@ -15,8 +17,10 @@ struct UsersListView: View {
                         UserCellView(user: user)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteUsers)
             }
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Random Users")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
@@ -50,10 +54,10 @@ struct UsersListView: View {
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteUsers(indexSet: IndexSet) {
         withAnimation {
-            for index in offsets {
-                modelContext.delete(users[index])
+            for index in indexSet {
+                users[index].isDeleted = true
             }
         }
     }
