@@ -7,10 +7,21 @@ struct UsersListView: View {
         user.isDeleted == false
     }) private var users: [RandomUserModel]
 
+    private var fliteredUsers: [RandomUserModel] {
+        users.filter { user in
+            if searchText.isEmpty {
+                return true
+            }
+            return user.firstName.localizedStandardContains(searchText)
+        }
+    }
+
+    @State private var searchText: String = ""
+
     var body: some View {
         NavigationStack {
             List {
-                ForEach(users) { user in
+                ForEach(fliteredUsers) { user in
                     NavigationLink {
                         UserDetailsView(user: user)
                     } label: {
@@ -22,6 +33,7 @@ struct UsersListView: View {
             .scrollContentBackground(.hidden)
             .navigationTitle("Users")
         }
+        .searchable(text: $searchText)
         .task {
             do {
                 let users = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
@@ -38,13 +50,13 @@ struct UsersListView: View {
     private func deleteUsers(indexSet: IndexSet) {
         withAnimation {
             for index in indexSet {
-                users[index].isDeleted = true
+                fliteredUsers[index].isDeleted = true
             }
         }
     }
 }
 
-#Preview {
-    UsersListView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
+//#Preview {
+//    UsersListView()
+//        .modelContainer(for: Item.self, inMemory: true)
+//}
