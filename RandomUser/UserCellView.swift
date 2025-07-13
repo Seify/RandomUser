@@ -13,10 +13,17 @@ struct UserCellView: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            AsyncImage(url: imageURL)
-                .clipShape(Circle())
-                .frame(width: 40, height: 40)
-                .padding([.top, .bottom, .trailing])
+            AsyncImage(url: imageURL) { phase in
+                let image = phase.image ?? Image(systemName: "person.circle")
+
+                return image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
+                    .frame(width: 40, height: 40)
+
+            }
+
             VStack(alignment: .leading) {
                 Text(name)
                     .font(.headline)

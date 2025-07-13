@@ -10,7 +10,7 @@ struct UsersListView: View {
             List {
                 ForEach(users) { user in
                     NavigationLink {
-                        Text("\(user.email)")
+                        UserDetailsView(user: user)
                     } label: {
                         UserCellView(user: user)
                     }
