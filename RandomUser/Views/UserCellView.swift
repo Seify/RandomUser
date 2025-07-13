@@ -4,12 +4,12 @@ struct UserCellView: View {
 
     let user: RandomUserModel
 
-    var imageURL: URL? { URL(string: user.thumbnail) }
-    var name: String {
+    private var imageURL: URL? { URL(string: user.thumbnail) }
+    private var name: String {
         "\(user.title) \(user.firstName) \(user.lastName)"
     }
-    var email: String { user.email }
-    var phone: String { user.phone }
+    private var email: String { user.email }
+    private var phone: String { user.phone }
 
     var body: some View {
         HStack(alignment: .top) {

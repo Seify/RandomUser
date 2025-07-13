@@ -7,19 +7,15 @@ struct UsersListView: View {
         filter: #Predicate<RandomUserModel> { user in
             user.isDeleted == false
         },
-        sort: \RandomUserModel.timestamp
+        sort: \.timestamp
     ) private var users: [RandomUserModel]
 
-    @State private var filteredUsers: [RandomUserModel] = []
-
-    @State private var searchText: String = ""
-    @State var selectedTokens = [UserSearchToken]()
-    @State var suggestedTokens = UserSearchToken.allCases
+    @State private var viewModel = UsersListViewModel()
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(filteredUsers) { user in
+                ForEach(viewModel.filteredUsers) { user in
                     NavigationLink {
                         UserDetailsView(user: user)
                     } label: {
@@ -37,18 +33,18 @@ struct UsersListView: View {
             .navigationTitle("Users")
         }
         .searchable(
-            text: $searchText,
-            tokens: $selectedTokens,
-            suggestedTokens: $suggestedTokens,
+            text: $viewModel.searchText,
+            tokens: $viewModel.selectedTokens,
+            suggestedTokens: $viewModel.suggestedTokens,
             token: { Text($0.rawValue) }
         )
-        .onChange(of: searchText) {
+        .onChange(of: viewModel.searchText) {
             // TODO: add debounce
             // https://tarkalabs.com/blogs/debounce-in-swift/
-            updateFilteredUsers()
+            viewModel.updateFilteredUsers(from: users)
         }
         .onAppear() {
-            updateFilteredUsers()
+            viewModel.updateFilteredUsers(from: users)
             Task {
                 if users.count == 0 {
                     await loadUsers()
@@ -58,7 +54,7 @@ struct UsersListView: View {
     }
 
     private func loadUsersIfNeeded(lastAppearedUser: RandomUserModel) async {
-        guard searchText.isEmpty, selectedTokens.isEmpty else {
+        guard viewModel.isNotSearching else {
             return
         }
 
@@ -69,13 +65,13 @@ struct UsersListView: View {
 
     private func loadUsers() async {
         do {
-            let users = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
-            for user in users.results {
+            let newUsers = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
+            for user in newUsers.results {
                 let model = RandomUserModel(user: user)
                 modelContext.insert(model)
             }
             try modelContext.save()
-            updateFilteredUsers()
+            viewModel.updateFilteredUsers(from: users)
         } catch {
             print(error)
         }
@@ -84,36 +80,23 @@ struct UsersListView: View {
     private func deleteUsers(indexSet: IndexSet) {
         withAnimation {
             for index in indexSet {
-                let user = filteredUsers[index]
-                let userModel = users.first(where: { $0.uuid == user.uuid })
-                userModel?.isDeleted = true
-                do {
-                    try modelContext.save()
-                } catch {
-                    print("failed to save model")
-                }
-                updateFilteredUsers()
+                deleteUser(at: index)
             }
+
+            do {
+                try modelContext.save()
+            } catch {
+                print(error)
+            }
+            
+            viewModel.updateFilteredUsers(from: users)
         }
     }
 
-    private func updateFilteredUsers() {
-        filteredUsers = users.filter { user in
-            if searchText.isEmpty {
-                return true
-            }
-
-            guard let token = selectedTokens.first else { return true }
-
-            return switch token {
-                case .name:
-                    user.firstName.localizedStandardContains(searchText)
-                case .surname:
-                    user.lastName.localizedStandardContains(searchText)
-                case .email:
-                    user.email.localizedStandardContains(searchText)
-            }
-        }
+    private func deleteUser(at index: IndexSet.Element) {
+        let user = viewModel.filteredUsers[index]
+        let userModel = users.first(where: { $0.uuid == user.uuid })
+        userModel?.isDeleted = true
     }
 }
 
