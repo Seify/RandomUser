@@ -5,13 +5,16 @@ struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<RandomUserModel> { user in
         user.isDeleted == false
-    }) private var users: [RandomUserModel]
+    },
+           sort: \RandomUserModel.timestamp
+    ) private var users: [RandomUserModel]
 
-    private var fliteredUsers: [RandomUserModel] {
+    private var filteredUsers: [RandomUserModel] {
         users.filter { user in
             if searchText.isEmpty {
                 return true
             }
+
             return user.firstName.localizedStandardContains(searchText)
         }
     }
@@ -21,7 +24,7 @@ struct UsersListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(fliteredUsers) { user in
+                ForEach(filteredUsers) { user in
                     NavigationLink {
                         UserDetailsView(user: user)
                     } label: {
@@ -50,7 +53,14 @@ struct UsersListView: View {
     private func deleteUsers(indexSet: IndexSet) {
         withAnimation {
             for index in indexSet {
-                fliteredUsers[index].isDeleted = true
+                let user = filteredUsers[index]
+                let userModel = users.first(where: { $0.uuid == user.uuid })
+                userModel?.isDeleted = true
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("failed to save model")
+                }
             }
         }
     }

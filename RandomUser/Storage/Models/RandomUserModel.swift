@@ -7,6 +7,7 @@ class RandomUserModel {
     @Attribute(.unique) var uuid: String
 
     var isDeleted: Bool
+    var timestamp: Double
 
     var title: String
     var firstName: String
@@ -63,5 +64,6 @@ class RandomUserModel {
         self.thumbnail = thumbnail
         self.uuid = uuid
         self.isDeleted = isDeleted
+        self.timestamp = NSDate.now.timeIntervalSince1970
     }
 }
