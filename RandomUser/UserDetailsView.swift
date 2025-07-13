@@ -47,7 +47,7 @@ struct UserDetailsView: View {
             }
                 .scrollContentBackground(.hidden)
         }
-        .navigationTitle("Random User")
+        .navigationTitle("User")
     }
 }
 

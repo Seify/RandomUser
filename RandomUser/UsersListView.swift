@@ -8,7 +8,7 @@ struct UsersListView: View {
     }) private var users: [RandomUserModel]
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             List {
                 ForEach(users) { user in
                     NavigationLink {
@@ -20,19 +20,7 @@ struct UsersListView: View {
                 .onDelete(perform: deleteUsers)
             }
             .scrollContentBackground(.hidden)
-            .navigationTitle("Random Users")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
+            .navigationTitle("Users")
         }
         .task {
             do {
@@ -44,13 +32,6 @@ struct UsersListView: View {
             } catch {
                 print(error)
             }
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
         }
     }
 
