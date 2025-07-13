@@ -3,10 +3,11 @@ import SwiftData
 
 struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(filter: #Predicate<RandomUserModel> { user in
-        user.isDeleted == false
-    },
-           sort: \RandomUserModel.timestamp
+    @Query(
+        filter: #Predicate<RandomUserModel> { user in
+            user.isDeleted == false
+        },
+        sort: \RandomUserModel.timestamp
     ) private var users: [RandomUserModel]
 
     private var filteredUsers: [RandomUserModel] {
@@ -15,11 +16,22 @@ struct UsersListView: View {
                 return true
             }
 
-            return user.firstName.localizedStandardContains(searchText)
+            guard let token = selectedTokens.first else { return true }
+
+            return switch token {
+                case .name:
+                    user.firstName.localizedStandardContains(searchText)
+                case .surname:
+                    user.lastName.localizedStandardContains(searchText)
+                case .email:
+                    user.email.localizedStandardContains(searchText)
+            }
         }
     }
 
     @State private var searchText: String = ""
+    @State var selectedTokens = [UserSearchToken]()
+    @State var suggestedTokens = UserSearchToken.allCases
 
     var body: some View {
         NavigationStack {
@@ -36,7 +48,15 @@ struct UsersListView: View {
             .scrollContentBackground(.hidden)
             .navigationTitle("Users")
         }
-        .searchable(text: $searchText)
+        .searchable(
+            text: $searchText,
+            tokens: $selectedTokens,
+            suggestedTokens: $suggestedTokens,
+            token: { Text($0.rawValue) }
+        )
+        .onSubmit(of: .search) {
+            print("Submit!")
+        }
         .task {
             do {
                 let users = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
