@@ -3,7 +3,7 @@ import XCTest
 
 final class RandomJsonDecoderTests: XCTestCase {
 
-    let jsonDecoder = RandomJsonDecoder()
+    let sut = RandomJsonDecoder()
     let correctData: Data! = TestJson.data(using: .utf8)
     let incorrectData: Data! = "Wrong JSON".data(using: .utf8)
 
@@ -12,7 +12,7 @@ final class RandomJsonDecoderTests: XCTestCase {
         let data = correctData!
 
         //when
-        let decodedJson: RandomUsers = try jsonDecoder.decode(data: data)
+        let decodedJson: RandomUsers = try sut.decode(data: data)
 
         // then
         XCTAssert(decodedJson.results.count == 5)
@@ -23,7 +23,7 @@ final class RandomJsonDecoderTests: XCTestCase {
         let data = correctData!
 
         //when
-        let decodedJson: RandomUsers = try jsonDecoder.decode(data: data)
+        let decodedJson: RandomUsers = try sut.decode(data: data)
         let firstUser = decodedJson.results.first!
 
         // then
@@ -51,7 +51,7 @@ final class RandomJsonDecoderTests: XCTestCase {
 
         //when
         do {
-            let _: RandomUsers = try jsonDecoder.decode(data: data)
+            let _: RandomUsers = try sut.decode(data: data)
         } catch {
             didThrow = true
         }
@@ -67,7 +67,7 @@ final class RandomJsonDecoderTests: XCTestCase {
 
         //when
         do {
-            let _: RandomUserName = try jsonDecoder.decode(data: data)
+            let _: RandomUserName = try sut.decode(data: data)
         } catch {
             didThrow = true
         }
