@@ -1,7 +1,7 @@
 import Foundation
 
 @Observable
-class UsersListViewModel {
+final class UsersListViewModel {
     var searchText: String = ""
     var selectedTokens: [UserSearchToken] = []
     var suggestedTokens = UserSearchToken.allCases

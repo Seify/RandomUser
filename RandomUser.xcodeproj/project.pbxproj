@@ -45,11 +45,6 @@
 			path = RandomUserUITests;
 			sourceTree = "<group>";
 		};
-		55ACAF3F2E219046007E467A /* Network */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Network;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +76,6 @@
 			isa = PBXGroup;
 			children = (
 				55ACAF102E21895B007E467A /* RandomUser */,
-				55ACAF3F2E219046007E467A /* Network */,
 				55ACAF202E21895D007E467A /* RandomUserTests */,
 				55ACAF2A2E21895D007E467A /* RandomUserUITests */,
 				55ACAF0F2E21895B007E467A /* Products */,
@@ -115,7 +109,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				55ACAF102E21895B007E467A /* RandomUser */,
-				55ACAF3F2E219046007E467A /* Network */,
 			);
 			name = RandomUser;
 			packageProductDependencies = (

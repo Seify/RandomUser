@@ -34,6 +34,6 @@ struct UserCellView: View {
     }
 }
 
-//#Preview {
-//    UserCellView()
-//}
+#Preview {
+    UserCellView(user: PreviewUsers.user1)
+}

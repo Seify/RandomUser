@@ -8,6 +8,8 @@ struct UsersListView: View {
         sort: \.timestamp
     ) private var users: [RandomUserModel]
 
+    @EnvironmentObject private var apiClient: RandomClient
+
     @State private var viewModel = UsersListViewModel()
 
     var body: some View {
@@ -44,7 +46,7 @@ struct UsersListView: View {
         .onAppear() {
             viewModel.updateFilteredUsers(from: users)
             Task {
-                if users.count == 0 {
+                if users.isEmpty {
                     await loadUsers()
                 }
             }
@@ -63,7 +65,7 @@ struct UsersListView: View {
 
     private func loadUsers() async {
         do {
-            let newUsers = try await RandomClient(decoder: RandomJsonDecoder()).getUsers()
+            let newUsers = try await apiClient.getUsers()
             for user in newUsers.results {
                 let model = RandomUserModel(user: user)
                 modelContext.insert(model)
@@ -97,7 +99,9 @@ struct UsersListView: View {
     }
 }
 
-//#Preview {
-//    UsersListView()
-//        .modelContainer(for: Item.self, inMemory: true)
-//}
+#Preview {
+    UsersListView()
+        .environmentObject(RandomDateFormatter())
+        .environmentObject(RandomClient(decoder: RandomJsonDecoder()))
+        .modelContainer(PreviewContainer.container)
+}

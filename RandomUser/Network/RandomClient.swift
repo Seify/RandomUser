@@ -1,20 +1,16 @@
 import Foundation
 
-protocol RandomClientProtocol {
-    func getUsers(_ limit: Int) async throws -> RandomUsers
-}
-
 enum RandomClientError: Error {
     case failedToCreateURL
     case failedResponse
     case failedResponseStatusCode(Int)
 }
 
-final class RandomClient: RandomClientProtocol {
+final class RandomClient: ObservableObject {
 
-    private let decoder: RandomJsonDecoderProtocol
+    private let decoder: RandomJsonDecoder
 
-    init(decoder: RandomJsonDecoderProtocol) {
+    init(decoder: RandomJsonDecoder) {
         self.decoder = decoder
     }
 
@@ -35,6 +31,7 @@ final class RandomClient: RandomClientProtocol {
     }
 
     func getUsers(_ limit: Int = 40) async throws -> RandomUsers {
+        
         guard let url = URL(string: Endpoints.users(limit).path) else {
             throw RandomClientError.failedToCreateURL
         }

@@ -3,6 +3,8 @@ import SwiftUI
 struct UserDetailsView: View {
     let user: RandomUserModel
 
+    @EnvironmentObject private var dateFormatter: RandomDateFormatter
+
     var imageURL: URL? { URL(string: user.largePicture) }
     var name: String {
         "\(user.title) \(user.firstName) \(user.lastName)"
@@ -11,16 +13,7 @@ struct UserDetailsView: View {
     var phone: String { user.phone }
     var gender: String { user.gender }
     var location: String { "\(user.streetNumber), \(user.streetName), \(user.city), \(user.state)"}
-    var registered: String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        guard let date = formatter.date(from: user.registered) else { return "" }
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        return dateFormatter.string(from: date)
-    }
+    var registered: String { dateFormatter.formattedDate(from: user.registered) }
 
     var body: some View {
         VStack(alignment: .center) {
@@ -51,6 +44,7 @@ struct UserDetailsView: View {
     }
 }
 
-//#Preview {
-//    UserDetailsView()
-//}
+#Preview {
+    UserDetailsView(user: PreviewUsers.user1)
+        .environmentObject(RandomDateFormatter())
+}

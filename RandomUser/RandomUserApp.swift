@@ -4,13 +4,8 @@ import SwiftData
 @main
 struct RandomUserApp: App {
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            RandomUserModel.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try ModelContainer(for: RandomUserModel.self)
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -19,6 +14,9 @@ struct RandomUserApp: App {
     var body: some Scene {
         WindowGroup {
             UsersListView()
+                .environmentObject(RandomDateFormatter())
+                .environmentObject(RandomClient(decoder: RandomJsonDecoder()))
+
         }
         .modelContainer(sharedModelContainer)
     }
