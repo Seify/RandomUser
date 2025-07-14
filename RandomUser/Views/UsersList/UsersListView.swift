@@ -102,6 +102,9 @@ struct UsersListView: View {
 #Preview {
     UsersListView()
         .environmentObject(RandomDateFormatter())
-        .environmentObject(RandomClient(decoder: RandomJsonDecoder()))
+        .environmentObject(RandomClient(
+            decoder: RandomJsonDecoder(),
+            loader: RandomClientLoader()
+        ))
         .modelContainer(PreviewContainer.container)
 }

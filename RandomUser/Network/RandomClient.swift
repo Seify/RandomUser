@@ -9,13 +9,15 @@ enum RandomClientError: Error {
 final class RandomClient: ObservableObject {
 
     private let decoder: RandomJsonDecoder
+    private let loader: RandomClientLoaderProtocol
 
-    init(decoder: RandomJsonDecoder) {
+    init(decoder: RandomJsonDecoder, loader: RandomClientLoaderProtocol) {
         self.decoder = decoder
+        self.loader = loader
     }
 
     private func getObjectFrom<T: Decodable>(url: URL) async throws -> T {
-        let (data, response) = try await URLSession.shared.data(from: url)
+        let (data, response) = try await loader.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RandomClientError.failedResponse

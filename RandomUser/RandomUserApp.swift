@@ -15,7 +15,10 @@ struct RandomUserApp: App {
         WindowGroup {
             UsersListView()
                 .environmentObject(RandomDateFormatter())
-                .environmentObject(RandomClient(decoder: RandomJsonDecoder()))
+                .environmentObject(RandomClient(
+                    decoder: RandomJsonDecoder(),
+                    loader: RandomClientLoader()
+                ))
 
         }
         .modelContainer(sharedModelContainer)
